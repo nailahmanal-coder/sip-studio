@@ -1,0 +1,34 @@
+@import "tailwindcss";
+
+* { font-family: 'Nunito', sans-serif; box-sizing: border-box; }
+
+@keyframes bounce-in {
+  0% { transform: scale(0.85); opacity: 0; }
+  70% { transform: scale(1.05); }
+  100% { transform: scale(1); opacity: 1; }
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+@keyframes wiggle {
+  0%, 100% { transform: rotate(-2deg); }
+  50% { transform: rotate(2deg); }
+}
+@keyframes pop {
+  0% { transform: scale(0.8); opacity: 0; }
+  70% { transform: scale(1.06); }
+  100% { transform: scale(1); opacity: 1; }
+}
+@keyframes steam {
+  0%, 100% { opacity: 0.3; transform: translateY(0); }
+  50% { opacity: 0.9; transform: translateY(-6px); }
+}
+
+.animate-bounce-in { animation: bounce-in 0.3s cubic-bezier(0.34,1.4,0.64,1); }
+.animate-float { animation: float 3s ease-in-out infinite; }
+.animate-wiggle { animation: wiggle 0.3s ease; }
+.animate-pop { animation: pop 0.35s cubic-bezier(0.34,1.4,0.64,1); }
+.steam-1 { animation: steam 2s ease-in-out infinite; }
+.steam-2 { animation: steam 2.5s ease-in-out 0.4s infinite; }
+.steam-3 { animation: steam 2s ease-in-out 0.8s infinite; }
