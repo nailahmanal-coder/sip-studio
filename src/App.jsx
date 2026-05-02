@@ -1,18 +1,62 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { supabase } from './supabase'
 import Build from './pages/Build'
 import Board from './pages/Board'
 
 export default function App() {
   const [page, setPage] = useState('build')
   const [orders, setOrders] = useState([])
+  const [loading, setLoading] = useState(true)
 
-  function addOrder(order) {
-    setOrders(prev => [order, ...prev])
+  useEffect(() => {
+    fetchOrders()
+  }, [])
+
+  async function fetchOrders() {
+    const { data, error } = await supabase
+      .from('orders')
+      .select('*')
+      .order('created_at', { ascending: false })
+    if (!error) setOrders(data)
+    setLoading(false)
+  }
+
+  async function addOrder(order) {
+    const { data, error } = await supabase
+      .from('orders')
+      .insert([{
+        base: order.base,
+        base_icon: order.baseIcon,
+        base_cat: order.baseCat,
+        grade: order.grade,
+        shots: order.shots,
+        milk: order.milk,
+        milk_ratio: order.milkRatio,
+        temp: order.temp,
+        ice: order.ice,
+        size: order.size,
+        sweetener: order.sweetener,
+        sweetness: order.sweetness,
+        foam: order.foam,
+        toppings: order.toppings,
+        dessert: order.dessert,
+        savoury: order.savoury,
+        from_name: order.from,
+        msg: order.msg,
+        liq_color: order.liqColor,
+        foam_color: order.foamColor,
+        is_cold: order.isCold,
+      }])
+      .select()
+
+    if (!error && data) {
+      setOrders(prev => [data[0], ...prev])
+    }
     setPage('board')
   }
 
   return (
-    <div className="h-screen flex flex-col overflow-hidden font-nunito bg-[#faf7f2]">
+    <div className="h-screen flex flex-col overflow-hidden bg-[#faf7f2]">
 
       {/* Rainbow strip */}
       <div className="h-1.5 w-full flex-shrink-0" style={{
@@ -20,7 +64,7 @@ export default function App() {
       }}/>
 
       {/* Nav */}
-      <nav className="bg-[#2c1a08] px-5 h-13 flex items-center justify-between flex-shrink-0" style={{height:'52px'}}>
+      <nav className="bg-[#2c1a08] px-5 flex items-center justify-between flex-shrink-0" style={{height:'52px'}}>
         <div className="text-[#faf7f2] font-black text-xl tracking-tight flex items-center gap-2">
           ☕ sip studio
         </div>
@@ -44,7 +88,10 @@ export default function App() {
 
       {/* Pages */}
       <div className="flex-1 overflow-hidden">
-        {page === 'build' ? <Build onClip={addOrder} /> : <Board orders={orders} />}
+        {page === 'build'
+          ? <Build onClip={addOrder} />
+          : <Board orders={orders} setOrders={setOrders} loading={loading} />
+        }
       </div>
 
     </div>
